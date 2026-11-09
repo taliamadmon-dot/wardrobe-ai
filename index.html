@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simply Wear | Personal Wardrobe & Styling</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
+    </style>
+</head>
+<body class="bg-[#FAFAFA] text-[#1A1A1A] antialiased min-h-screen flex flex-col">
+
+    <!-- Header / Navigation -->
+    <header class="sticky top-0 z-50 bg-white/85 backdrop-blur-md border-b border-neutral-100">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <!-- Brand Logo -->
+            <div class="flex items-center space-x-3">
+                <span class="text-2xl font-light tracking-[0.25em] uppercase text-neutral-900">Simply Wear</span>
+                <span class="text-xs uppercase tracking-widest bg-neutral-900 text-white px-2.5 py-0.5 rounded-full font-medium">Atelier</span>
+            </div>
+
+            <!-- Navigation Tabs -->
+            <nav class="hidden md:flex items-center space-x-8 text-sm font-medium tracking-wide">
+                <button onclick="switchTab('wardrobe')" id="nav-wardrobe" class="text-neutral-900 pb-1 border-b-2 border-neutral-900 transition-all">Wardrobe</button>
+                <button onclick="switchTab('generator')" id="nav-generator" class="text-neutral-400 hover:text-neutral-900 pb-1 border-b-2 border-transparent transition-all">Look Generator</button>
+                <button onclick="switchTab('stylist')" id="nav-stylist" class="text-neutral-400 hover:text-neutral-900 pb-1 border-b-2 border-transparent transition-all flex items-center gap-1.5">
+                    <i class="fa-solid fa-wand-magic-sparkles text-amber-600"></i> Aura Stylist
+                </button>
+            </nav>
+
+            <!-- User Actions -->
+            <div class="flex items-center space-x-4">
+                <button onclick="openAddModal()" class="bg-neutral-900 text-white px-5 py-2.5 rounded-full text-xs uppercase tracking-widest hover:bg-neutral-800 transition flex items-center gap-2 shadow-sm cursor-pointer">
+                    <i class="fa-solid fa-plus"></i> Add Item
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-6 py-8">
+
+        <!-- ==================== WARDROBE TAB ==================== -->
+        <section id="tab-wardrobe" class="space-y-8 animate-fade-in">
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-neutral-200 pb-6">
+                <div>
+                    <h1 class="text-3xl font-light tracking-wide text-neutral-900">Your Wardrobe Archive</h1>
+                    <p class="text-sm text-neutral-500 mt-1">Curated collection of garments, footwear, and accessories.</p>
+                </div>
+                <!-- Filters -->
+                <div class="flex flex-wrap gap-2 text-xs uppercase tracking-wider">
+                    <button onclick="filterWardrobe('all')" class="category-btn active px-4 py-2 rounded-full border border-neutral-900 bg-neutral-900 text-white transition cursor-pointer">All Items</button>
+                    <button onclick="filterWardrobe('tops')" class="category-btn px-4 py-2 rounded-full border border-neutral-300 text-neutral-600 hover:border-neutral-900 transition cursor-pointer">Tops</button>
+                    <button onclick="filterWardrobe('bottoms')" class="category-btn px-4 py-2 rounded-full border border-neutral-300 text-neutral-600 hover:border-neutral-900 transition cursor-pointer">Bottoms</button>
+                    <button onclick="filterWardrobe('shoes')" class="category-btn px-4 py-2 rounded-full border border-neutral-300 text-neutral-600 hover:border-neutral-900 transition cursor-pointer">Shoes</button>
+                    <button onclick="filterWardrobe('accessories')" class="category-btn px-4 py-2 rounded-full border border-neutral-300 text-neutral-600 hover:border-neutral-900 transition cursor-pointer">Accessories</button>
+                </div>
+            </div>
+
+            <!-- Grid of Items -->
+            <div id="wardrobe-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Populated via JS -->
+            </div>
+        </section>
+
+        <!-- ==================== LOOK GENERATOR (TINDER SWAP) TAB ==================== -->
+        <section id="tab-generator" class="hidden space-y-8 animate-fade-in max-w-4xl mx-auto">
+            <div class="text-center space-y-2">
+                <h1 class="text-3xl font-light tracking-wide text-neutral-900">Look Generator & Swap</h1>
+                <p class="text-sm text-neutral-500">Select an occasion and swipe/swap through curated outfits tailored for you.</p>
+            </div>
+
+            <!-- Occasion Selector -->
+            <div class="flex justify-center gap-3 flex-wrap">
+                <button onclick="selectOccasion('Office')" class="occasion-btn active px-6 py-2.5 rounded-full text-xs uppercase tracking-widest border border-neutral-900 bg-neutral-900 text-white transition cursor-pointer">Office Work</button>
+                <button onclick="selectOccasion('Casual')" class="occasion-btn px-6 py-2.5 rounded-full text-xs uppercase tracking-widest border border-neutral-300 text-neutral-700 hover:border-neutral-900 transition cursor-pointer">Casual Brunch</button>
+                <button onclick="selectOccasion('Evening')" class="occasion-btn px-6 py-2.5 rounded-full text-xs uppercase tracking-widest border border-neutral-300 text-neutral-700 hover:border-neutral-900 transition cursor-pointer">Evening Out</button>
+            </div>
+
+            <!-- Tinder Card / Outfit Showcase Container -->
+            <div class="relative bg-white border border-neutral-200 rounded-2xl shadow-xl overflow-hidden p-8 flex flex-col items-center">
+                <!-- Outfit Canvas -->
+                <div id="outfit-display" class="w-full grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                    <!-- Populated dynamically -->
+                </div>
+
+                <!-- Outfit Info -->
+                <div class="text-center space-y-2 mb-8">
+                    <span id="outfit-occasion-badge" class="text-xs uppercase tracking-widest bg-amber-50 text-amber-800 px-3 py-1 rounded-full font-medium">Office Work Look</span>
+                    <h2 id="outfit-title" class="text-xl font-medium text-neutral-900">Tailored Neutral Harmony</h2>
+                    <p id="outfit-desc" class="text-sm text-neutral-500">Crisp silk blouse paired with high-waist wool trousers and classic leather loafers.</p>
+                </div>
+
+                <!-- Tinder Swap Controls -->
+                <div class="flex items-center gap-6">
+                    <button onclick="swapOutfitPart('dislike')" class="w-14 h-14 rounded-full border border-neutral-200 flex items-center justify-center text-neutral-400 hover:text-red-500 hover:border-red-300 transition shadow-sm bg-white text-lg cursor-pointer" title="Discard Piece">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                    <button onclick="saveCurrentLook()" class="px-8 py-3 rounded-full bg-neutral-900 text-white text-xs uppercase tracking-widest hover:bg-neutral-800 transition shadow-md flex items-center gap-2 cursor-pointer">
+                        <i class="fa-solid fa-heart text-amber-400"></i> Save Look
+                    </button>
+                    <button onclick="swapOutfitPart('like')" class="w-14 h-14 rounded-full border border-neutral-200 flex items-center justify-center text-neutral-400 hover:text-emerald-500 hover:border-emerald-300 transition shadow-sm bg-white text-lg cursor-pointer" title="Swap Piece (Tinder Style)">
+                        <i class="fa-solid fa-rotate"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== STYLIST (AURA) TAB ==================== -->
+        <section id="tab-stylist" class="hidden space-y-6 animate-fade-in max-w-3xl mx-auto">
+            <div class="text-center space-y-2">
+                <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-amber-50 text-amber-700 mb-1">
+                    <i class="fa-solid fa-wand-magic-sparkles text-lg"></i>
+                </div>
+                <h1 class="text-3xl font-light tracking-wide text-neutral-900">Aura — Personal Stylist</h1>
+                <p class="text-sm text-neutral-500">Ask for outfit feedback, styling tips, or suggestions for missing wardrobe pieces.</p>
+            </div>
+
+            <!-- Chat Box Container -->
+            <div class="bg-white border border-neutral-200 rounded-2xl shadow-sm flex flex-col h-[500px]">
+                <!-- Chat Messages -->
+                <div id="chat-messages" class="flex-1 p-6 overflow-y-auto space-y-4">
+                    <div class="flex items-start gap-3">
+                        <div class="w-8 h-8 rounded-full bg-neutral-900 text-white flex items-center justify-center text-xs shrink-0">A</div>
+                        <div class="bg-neutral-100 rounded-2xl p-4 text-sm text-neutral-800 max-w-md">
+                            Hello! I'm Aura, your personal stylist at Simply Wear. How can I help you refine your look today? Feel free to ask for color pairing advice or missing wardrobe essentials!
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chat Input -->
+                <div class="p-4 border-t border-neutral-100 flex items-center gap-3">
+                    <input type="text" id="chat-input" placeholder="Ask Aura anything about styling..." class="flex-1 bg-neutral-50 border border-neutral-200 rounded-full px-5 py-3 text-sm focus:outline-none focus:border-neutral-900 transition">
+                    <button onclick="sendChatMessage()" class="bg-neutral-900 text-white w-11 h-11 rounded-full flex items-center justify-center hover:bg-neutral-800 transition shrink-0 cursor-pointer">
+                        <i class="fa-solid fa-arrow-up text-sm"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ==================== ADD ITEM MODAL ==================== -->
+    <div id="add-modal" class="fixed inset-0 z-50 bg-neutral-900/40 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-8 shadow-2xl animate-fade-in space-y-6">
+            <div class="flex items-center justify-between border-b border-neutral-100 pb-4">
+                <h3 class="text-lg font-medium text-neutral-900">Add New Wardrobe Piece</h3>
+                <button onclick="closeAddModal()" class="text-neutral-400 hover:text-neutral-900 cursor-pointer"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+
+            <!-- Add Methods Tabs -->
+            <div class="grid grid-cols-3 gap-2 bg-neutral-50 p-1 rounded-xl text-xs font-medium text-center">
+                <button onclick="switchAddMode('upload')" id="mode-upload-btn" class="py-2 rounded-lg bg-white text-neutral-900 shadow-sm transition cursor-pointer">Upload Image</button>
+                <button onclick="switchAddMode('url')" id="mode-url-btn" class="py-2 rounded-lg text-neutral-500 hover:text-neutral-900 transition cursor-pointer">Import via URL</button>
+                <button onclick="switchAddMode('camera')" id="mode-camera-btn" class="py-2 rounded-lg text-neutral-500 hover:text-neutral-900 transition cursor-pointer">Quick Snap</button>
+            </div>
+
+            <!-- Mode 1: Upload -->
+            <div id="add-mode-upload" class="space-y-4">
+                <label class="border-2 border-dashed border-neutral-200 rounded-2xl p-6 flex flex-col items-center justify-center cursor-pointer hover:border-neutral-400 transition bg-neutral-50/50">
+                    <i class="fa-regular fa-image text-2xl text-neutral-400 mb-2"></i>
+                    <span class="text-xs text-neutral-600 font-medium">Click to upload garment photo</span>
+                    <span class="text-[10px] text-neutral-400 mt-1">PNG, JPG up to 10MB (Auto background removal enabled)</span>
+                    <input type="file" id="item-file-input" class="hidden" accept="image/*" onchange="previewUploadedImage(event)">
+                </label>
+                <div id="image-preview-container" class="hidden flex items-center gap-4 bg-neutral-50 p-3 rounded-xl border border-neutral-200">
+                    <img id="uploaded-preview-img" src="" class="w-16 h-16 object-cover rounded-lg">
+                    <span class="text-xs text-neutral-700 font-medium truncate" id="uploaded-file-name">item.jpg</span>
+                </div>
+            </div>
+
+            <!-- Mode 2: URL -->
+            <div id="add-mode-url" class="space-y-4 hidden">
+                <div>
+                    <label class="block text-xs uppercase tracking-wider text-neutral-500 mb-2">Product Web Link</label>
+                    <div class="flex gap-2">
+                        <input type="url" id="item-url-input" placeholder="https://store.com/product..." class="flex-1 bg-neutral-50 border border-neutral-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-neutral-950">
+                        <button onclick="simulateUrlScrape()" class="bg-neutral-900 text-white px-4 py-2.5 rounded-xl text-xs uppercase tracking-wider hover:bg-neutral-800 transition cursor-pointer">Fetch</button>
+                    </div>
+                </div>
+                <div id="url-scrape-status" class="text-xs text-emerald-600 font-medium hidden">
+                    <i class="fa-solid fa-check mr-1"></i> Product details fetched successfully!
+                </div>
+            </div>
+
+            <!-- Mode 3: Camera -->
+            <div id="add-mode-camera" class="space-y-4 hidden text-center">
+                <div class="bg-neutral-900 rounded-2xl h-48 flex flex-col items-center justify-center text-white relative overflow-hidden">
+                    <i class="fa-solid fa-camera text-3xl mb-2 text-neutral-400"></i>
+                    <p class="text-xs text-neutral-400">Camera live preview simulation</p>
+                    <button onclick="simulateCameraSnap()" class="mt-4 bg-white text-neutral-900 px-5 py-2 rounded-full text-xs uppercase tracking-wider font-medium hover:bg-neutral-100 transition cursor-pointer">Take Snapshot</button>
+                </div>
+            </div>
+
+            <!-- Common Item Details Form -->
+            <div class="space-y-4 border-t border-neutral-100 pt-4">
+                <div>
+                    <label class="block text-xs uppercase tracking-wider text-neutral-500 mb-1">Item Name</label>
+                    <input type="text" id="item-name-input" placeholder="e.g., Silk Satin Blouse" class="w-full bg-neutral-50 border border-neutral-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-neutral-950">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs uppercase tracking-wider text-neutral-500 mb-1">Category</label>
+                        <select id="item-category-input" class="w-full bg-neutral-50 border border-neutral-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-neutral-950">
+                            <option value="tops">Top</option>
+                            <option value="bottoms">Bottom</option>
+                            <option value="shoes">Shoes</option>
+                            <option value="accessories">Accessory</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs uppercase tracking-wider text-neutral-500 mb-1">Color / Tone</label>
+                        <input type="text" id="item-color-input" placeholder="e.g., Ivory White" class="w-full bg-neutral-50 border border-neutral-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-neutral-950">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex items-center justify-end gap-3 pt-2">
+                <button onclick="closeAddModal()" class="px-5 py-2.5 rounded-full text-xs uppercase tracking-wider text-neutral-500 hover:text-neutral-900 transition cursor-pointer">Cancel</button>
+                <button onclick="saveNewWardrobeItem()" class="bg-neutral-900 text-white px-6 py-2.5 rounded-full text-xs uppercase tracking-widest hover:bg-neutral-800 transition shadow-sm cursor-pointer">Save to Wardrobe</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // Initial Wardrobe Database
+        let wardrobeItems = [
+            { id: 1, name: "סריג גולף אפור בהיר", category: "סריגים", color: "אפור בהיר", image: "assets/image1.png" },
+            { id: 2, name: "סריג שמנת עם רקמת פרחים", category: "סריגים", color: "שמנת", image: "assets/image2.png" },
+            { id: 3, name: "חולצת גולף ורודה בהירה", category: "סריגים", color: "ורוד בהיר", image: "assets/image3.png" },
+            { id: 4, name: "חולצת גולף אפורה כהה", category: "סריגים", color: "אפור כהה", image: "assets/image4.png" },
+            { id: 5, name: "בגד גוף בורדו עם כתפיות", category: "טופים", color: "בורדו", image: "assets/image5.png" },
+            { id: 6, name: "טופ בנדו חום מכווץ עם כפתורים", category: "טופים", color: "חום", image: "assets/image6.png" },
+            { id: 7, name: "טופ סטרפלס זית", category: "טופים", color: "זית", image: "assets/image7.png" },
+            { id: 8, name: "טופ סטרפלס אפור כהה", category: "טופים", color: "אפור כהה", image: "assets/image8.png" },
+            { id: 9, name: "חולצת תחרה לבנה עם כפתורים", category: "טופים", color: "לבן", image: "assets/image9.png" },
+            { id: 10, name: "גופייה פרחונית כהה", category: "טופים", color: "כהה", image: "assets/image10.png" },
+            { id: 11, name: "גופיית תחרה בצבע שמנת", category: "טופים", color: "שמנת", image: "assets/image11.png" },
+            { id: 12, name: "טי שירט אוף-וייט עם הדפס קטן", category: "טי שירט", color: "אוף-וייט", image: "assets/image12.png" },
+            { id: 13, name: "טי שירט שחורה עם כיתוב לבן", category: "טי שירט", color: "שחור", image: "assets/image13.png" },
+            { id: 14, name: "טי שירט ורודה Miami", category: "טי שירט", color: "ורוד", image: "assets/image14.png" },
+            { id: 15, name: "טי שירט לבנה חלקה", category: "טי שירט", color: "לבן", image: "assets/image15.png" },
+            { id: 16, name: "טי שירט אפורה חלקה", category: "טי שירט", color: "אפור", image: "assets/image16.png" },
+            { id: 17, name: "מגפוני צ'לסי שחורים עם פס בהיר", category: "נעליים", color: "שחור", image: "assets/image17.png" },
+            { id: 18, name: "מגפיים שחורים גבוהים ושטוחים", category: "נעליים", color: "שחור", image: "assets/image18.png" },
+            { id: 19, name: "נעלי רצועות שחורות מחודדות", category: "נעליים", color: "שחור", image: "assets/image19.png" },
+            { id: 20, name: "כפכפי מוקסין לבנים עם אבזם זהוב", category: "נעליים", color: "לבן", image: "assets/image20.png" },
+            { id: 21, name: "נעליים שחורות מחודדות עם עקב נמוך", category: "נעליים", color: "שחור", image: "assets/image21.png" },
+            { id: 22, name: "כפכפי מוקסין חומים מחוררים", category: "נעליים", color: "חום", image: "assets/image22.png" },
+            { id: 23, name: "סניקרס New Balance בהירות", category: "נעליים", color: "בהיר", image: "assets/image23.png" },
+            { id: 24, name: "סניקרס Vans עם פס מנומר", category: "נעליים", color: "מנומר", image: "assets/image24.png" },
+            { id: 25, name: "מגפונים חומים עם סוליה כהה", category: "נעליים", color: "חום", image: "assets/image25.png" },
+            { id: 26, name: "סניקרס גבוהות לבנות עם פלטפורמה", category: "נעליים", color: "לבן", image: "assets/image26.png" },
+            { id: 27, name: "מגפונים שחורים מבריקים עם עקב", category: "נעליים", color: "שחור", image: "assets/image27.png" },
+            { id: 28, name: "חגורה שחורה עם אבזם זהוב", category: "חגורות", color: "שחור", image: "assets/image28.png" },
+            { id: 29, name: "חגורה חומה כהה עם אבזם כסוף", category: "חגורות", color: "חום כהה", image: "assets/image29.png" },
+            { id: 30, name: "חגורה חומה כהה עם אבזם אובלי זהוב", category: "חגורות", color: "חום כהה", image: "assets/image30.png" },
+            { id: 31, name: "חגורה חומה בינונית עם אבזם זהוב", category: "חגורות", color: "חום בינוני", image: "assets/image31.png" },
+            { id: 32, name: "חגורה חומה צרה עם אבזם מעוגל", category: "חגורות", color: "חום", image: "assets/image32.png" },
+            { id: 33, name: "חגורה לבנה עם אבזם כסוף", category: "חגורות", color: "לבן", image: "assets/image33.png" },
+            { id: 34, name: "ג'ינס שחור עם סיומת פרומה", category: "מכנסיים וג'ינס", color: "שחור", image: "assets/image34.png" },
+            { id: 35, name: "ג'ינס אינדיגו רחב", category: "מכנסיים וג'ינס", color: "אינדיגו", image: "assets/image35.png" },
+            { id: 36, name: "ג'ינס כחול עם סיומת פרומה", category: "מכנסיים וג'ינס", color: "כחול", image: "assets/image36.png" },
+            { id: 37, name: "מכנסי ריב סרוגים בגזרה ישרה בצבע טאופ", category: "מכנסיים וג'ינס", color: "טאופ", image: "assets/image37.png" },
+            { id: 38, name: "מכנסי ריב סרוגים בגזרה ישרה בצבע שמנת", category: "מכנסיים וג'ינס", color: "שמנת", image: "assets/image38.png" },
+            { id: 39, name: "מכנסיים מחויטים חומים", category: "מכנסיים וג'ינס", color: "חום", image: "assets/image39.png" },
+            { id: 40, name: "מכנסיים זורמים עם קפלים בגוון זית", category: "מכנסיים וג'ינס", color: "זית", image: "assets/image40.png" },
+            { id: 41, name: "מכנסיים מחויטים רחבים נייבי", category: "מכנסיים וג'ינס", color: "נייבי", image: "assets/image41.png" },
+            { id: 42, name: "מכנסיים מחויטים רחבים שחורים עם מכפלת", category: "מכנסיים וג'ינס", color: "שחור", image: "assets/image42.png" },
+            { id: 43, name: "מכנסיים בגוון אבן עם מותן גומי", category: "מכנסיים וג'ינס", color: "אבן", image: "assets/image43.png" },
+            { id: 44, name: "בלייזר שחור", category: "שכבות", color: "שחור", image: "assets/image44.png" },
+            { id: 45, name: "בלייזר בז' עם שרוולים מכווצים", category: "שכבות", color: "בז'", image: "assets/image45.png" },
+            { id: 46, name: "בלייזר אוברסייז משבצות שחור-לבן", category: "שכבות", color: "משבצות", image: "assets/image46.png" },
+            { id: 47, name: "ז'קט זמש קצר שחור עם כפתורי זהב", category: "שכבות", color: "שחור", image: "assets/image47.png" },
+            { id: 48, name: "חולצה מכופתרת בצבע פטרול", category: "מכופתרות", color: "פטרול", image: "assets/image48.png" },
+            { id: 49, name: "חולצה מכופתרת בהדפס זברה", category: "מכופתרות", color: "זברה", image: "assets/image49.png" },
+            { id: 50, name: "חולצה מכופתרת לבנה עם פסים דקים", category: "מכופתרות", color: "לבן", image: "assets/image50.png" },
+            { id: 51, name: "קרדיגן פסים שחור אפור", category: "סריגים וקרדיגנים", color: "שחור אפור", image: "assets/image51.png" },
+            { id: 52, name: "קרדיגן אפור קצר", category: "סריגים וקרדיגנים", color: "אפור", image: "assets/image52.png" },
+            { id: 53, name: "סריג קצר מנומר", category: "סריגים וקרדיגנים", color: "מנומר", image: "assets/image53.png" },
+            { id: 54, name: "קרדיגן חום קאמל", category: "סריגים וקרדיגנים", color: "קאמל", image: "assets/image54.png" },
+            { id: 55, name: "קרדיגן שמנת עם פסים שחורים", category: "סריגים וקרדיגנים", color: "שמנת", image: "assets/image55.png" },
+            { id: 56, name: "סריג אפור כהה עם כתפיים תפוחות", category: "חולצות ארוכות", color: "אפור כהה", image: "assets/image56.png" },
+            { id: 57, name: "חולצת שמנת עם שרוולים מכווצים", category: "חולצות ארוכות", color: "שמנת", image: "assets/image57.png" },
+            { id: 58, name: "חולצה חומה עם שרוולים מכווצים", category: "חולצות ארוכות", color: "חום", image: "assets/image58.png" },
+            { id: 59, name: "סווטשירט בורדו עם רוכסן קצר", category: "חולצות ארוכות", color: "בורדו", image: "assets/image59.png" },
+            { id: 60, name: "חולצת ריב כחולה בגוון שטוף", category: "חולצות ארוכות", color: "כחול", image: "assets/image60.png" },
+            { id: 61, name: "חולצת גולף דקה סגולה", category: "חולצות ארוכות", color: "סגול", image: "assets/image61.png" },
+            { id: 62, name: "טופ שמנת ללא שרוולים עם צווארון גבוה", category: "ללא שרוולים", color: "שמנת", image: "assets/image62.png" },
+            { id: 63, name: "טופ שמנת ללא שרוולים עם מחשוף רחב", category: "ללא שרוולים", color: "שמנת", image: "assets/image63.png" },
+            { id: 64, name: "גופיית ריב בורדו", category: "ללא שרוולים", color: "בורדו", image: "assets/image64.png" },
+            { id: 65, name: "טופ שמנת ללא שרוולים עם צווארון עגול", category: "ללא שרוולים", color: "שמנת", image: "assets/image65.png" },
+            { id: 66, name: "טופ חום זית ללא שרוולים עם צווארון גבוה", category: "ללא שרוולים", color: "חום זית", image: "assets/image66.png" },
+            { id: 67, name: "טופ ורוד מעושן ללא שרוולים", category: "ללא שרוולים", color: "ורוד מעושן", image: "assets/image67.png" },
+            { id: 68, name: "גופייה בצבע פוקסיה", category: "ללא שרוולים", color: "פוקסיה", image: "assets/image68.png" },
+            { id: 69, name: "גופיית ריב אפורה", category: "ללא שרוולים", color: "אפור", image: "assets/image69.png" },
+            { id: 70, name: "חולצת בוט-נק בגוון זית", category: "חולצות ארוכות", color: "זית", image: "assets/image70.png" },
+            { id: 71, name: "טופ קרופ תחרה שחור", category: "טופים", color: "שחור", image: "assets/image71.png" },
+            { id: 72, name: "חולצת קרפ נייבי עם צווארון גבוה", category: "חולצות ארוכות", color: "נייבי", image: "assets/image72.png" },
+            { id: 73, name: "חולצת בוט-נק בורדו", category: "חולצות ארוכות", color: "בורדו", image: "assets/image73.png" },
+            { id: 74, name: "טופ מטאלי זהב עם גב פתוח", category: "טופים", color: "זהב", image: "assets/image74.png" },
+            { id: 75, name: "גופיית כותנה שחורה עם כתפיות דקות", category: "טופים", color: "שחור", image: "assets/image75.png" },
+            { id: 76, name: "שמלת טול פרחונית בגווני תכלת", category: "שמלות", color: "תכלת", image: "assets/image76.png" },
+            { id: 77, name: "טופ חום כהה ללא שרוולים", category: "ללא שרוולים", color: "חום כהה", image: "assets/image77.png" },
+            { id: 79, name: "צמיד בנגל עבה שמנת", category: "תכשיטים", color: "שמנת", image: "assets/image79.png" },
+            { id: 80, name: "שרשרת זהב דקה עם תליון עגול", category: "תכשיטים", color: "זהב", image: "assets/image80.png" },
+            { id: 88, name: "תיק טוט גדול חום כהה עם מונוגרם", category: "תיקים", color: "חום כהה", image: "assets/image88.png" },
+            { id: 89, name: "מעיל צמר קאמל דבל-ברסטד עם כפתורי זהב", category: "שכבות", color: "קאמל", image: "assets/image89.png" }
+        ];
+
+        let currentOccasion = 'Office';
+        let currentTempImage = "https://images.unsplash.com/photo-1598554747436-c9293d6a588f?auto=format&fit=crop&w=600&q=80";
+
+        // Navigation Switcher
+        function switchTab(tabId) {
+            ['wardrobe', 'generator', 'stylist'].forEach(t => {
+                document.getElementById(`tab-${t}`).classList.add('hidden');
+                document.getElementById(`nav-${t}`).className = "text-neutral-400 hover:text-neutral-900 pb-1 border-b-2 border-transparent transition-all";
+            });
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+            document.getElementById(`nav-${tabId}`).className = "text-neutral-900 pb-1 border-b-2 border-neutral-900 transition-all font-medium";
+
+            if (tabId === 'generator') loadOutfitGenerator();
+        }
+
+        // Render Wardrobe Grid
+        function renderWardrobe(filter = 'all') {
+            const grid = document.getElementById('wardrobe-grid');
+            grid.innerHTML = '';
+
+            const filtered = filter === 'all' ? wardrobeItems : wardrobeItems.filter(i => i.category === filter);
+
+            filtered.forEach(item => {
+                grid.innerHTML += `
+                    <div class="bg-white border border-neutral-200 rounded-2xl overflow-hidden group shadow-sm hover:shadow-md transition">
+                        <div class="h-64 bg-neutral-100 overflow-hidden relative">
+                            <img src="${item.image}" alt="${item.name}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                            <span class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm text-neutral-900 text-[10px] uppercase tracking-widest px-2.5 py-1 rounded-full font-medium">
+                                ${item.category}
+                            </span>
+                        </div>
+                        <div class="p-4 flex items-center justify-between">
+                            <div>
+                                <h4 class="text-sm font-medium text-neutral-900">${item.name}</h4>
+                                <p class="text-xs text-neutral-500 mt-0.5">${item.color}</p>
+                            </div>
+                            <button onclick="deleteItem(${item.id})" class="text-neutral-300 hover:text-red-500 transition cursor-pointer" title="Remove Item">
+                                <i class="fa-regular fa-trash-can text-sm"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function filterWardrobe(category) {
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.className = "category-btn px-4 py-2 rounded-full border border-neutral-300 text-neutral-600 hover:border-neutral-900 transition cursor-pointer";
+            });
+            event.target.className = "category-btn active px-4 py-2 rounded-full border border-neutral-900 bg-neutral-900 text-white transition cursor-pointer";
+            renderWardrobe(category);
+        }
+
+        function deleteItem(id) {
+            wardrobeItems = wardrobeItems.filter(i => i.id !== id);
+            renderWardrobe();
+        }
+
+        // Look Generator & Tinder Swap Logic
+        const outfitPresets = {
+            Office: {
+                badge: "Office Work Look",
+                title: "Tailored Neutral Harmony",
+                desc: "Crisp silk blouse paired with high-waist wool trousers and classic leather loafers.",
+                items: ["tops", "bottoms", "shoes", "accessories"]
+            },
+            Casual: {
+                badge: "Casual Brunch Look",
+                title: "Effortless Weekend Chic",
+                desc: "Soft cashmere crewneck knit matched with a pleated midi skirt and minimalist heels.",
+                items: ["tops", "bottoms", "shoes", "accessories"]
+            },
+            Evening: {
+                badge: "Evening Out Look",
+                title: "Sophisticated Noir",
+                desc: "Structured silhouette accessorized with golden accents and refined block heels.",
+                items: ["tops", "bottoms", "shoes", "accessories"]
+            }
+        };
+
+        function selectOccasion(occasion) {
+            currentOccasion = occasion;
+            document.querySelectorAll('.occasion-btn').forEach(btn => {
+                btn.className = "occasion-btn px-6 py-2.5 rounded-full text-xs uppercase tracking-widest border border-neutral-300 text-neutral-700 hover:border-neutral-900 transition cursor-pointer";
+            });
+            event.target.className = "occasion-btn active px-6 py-2.5 rounded-full text-xs uppercase tracking-widest border border-neutral-900 bg-neutral-900 text-white transition cursor-pointer";
+            loadOutfitGenerator();
+        }
+
+        function loadOutfitGenerator() {
+            const preset = outfitPresets[currentOccasion];
+            document.getElementById('outfit-occasion-badge').innerText = preset.badge;
+            document.getElementById('outfit-title').innerText = preset.title;
+            document.getElementById('outfit-desc').innerText = preset.desc;
+
+            const display = document.getElementById('outfit-display');
+            display.innerHTML = '';
+
+            // Pick one item per category for the current outfit
+            ['tops', 'bottoms', 'shoes', 'accessories'].forEach(cat => {
+                const candidates = wardrobeItems.filter(i => i.category === cat);
+                const selected = candidates.length > 0 ? candidates[Math.floor(Math.random() * candidates.length)] : wardrobeItems[0];
+
+                display.innerHTML += `
+                    <div class="bg-neutral-50 rounded-xl p-3 border border-neutral-100 flex flex-col items-center group">
+                        <div class="w-full h-36 bg-white rounded-lg overflow-hidden mb-2 relative">
+                            <img src="${selected.image}" class="w-full h-full object-cover group-hover:scale-105 transition">
+                        </div>
+                        <span class="text-[10px] uppercase tracking-widest text-neutral-400 font-medium">${cat}</span>
+                        <p class="text-xs font-medium text-neutral-800 text-center truncate w-full">${selected.name}</p>
+                    </div>
+                `;
+            });
+        }
+
+        function swapOutfitPart(action) {
+            // Tinder swap animation/logic: shuffles one piece or generates a new combination
+            loadOutfitGenerator();
+        }
+
+        function saveCurrentLook() {
+            alert("Look saved successfully to your favorites collection!");
+        }
+
+        // Stylist Chat (Aura) Logic
+        function sendChatMessage() {
+            const input = document.getElementById('chat-input');
+            const message = input.value.trim();
+            if (!message) return;
+
+            const chatMessages = document.getElementById('chat-messages');
+
+            // User Message
+            chatMessages.innerHTML += `
+                <div class="flex items-start gap-3 justify-end">
+                    <div class="bg-neutral-900 text-white rounded-2xl p-4 text-sm max-w-md">
+                        ${message}
+                    </div>
+                    <div class="w-8 h-8 rounded-full bg-neutral-200 text-neutral-700 flex items-center justify-center text-xs shrink-0 font-medium">You</div>
+                </div>
+            `;
+            input.value = '';
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            // Aura Stylist Simulated Response
+            setTimeout(() => {
+                let reply = "That's a wonderful styling direction! Based on your current wardrobe items, I recommend pairing neutral tones with metallic gold accessories to elevate the look instantly.";
+                if (message.toLowerCase().includes('color') || message.toLowerCase().includes('colors')) {
+                    reply = "For your skin tone and current palette, earth tones (olive, camel, ivory) combined with charcoal will create an effortlessly luxurious aesthetic.";
+                } else if (message.toLowerCase().includes('missing') || message.toLowerCase().includes('buy')) {
+                    reply = "To complete your capsule wardrobe, consider adding a tailored structured blazer in cream and a pair of classic pointed-toe leather flats.";
+                }
+
+                chatMessages.innerHTML += `
+                    <div class="flex items-start gap-3">
+                        <div class="w-8 h-8 rounded-full bg-neutral-900 text-white flex items-center justify-center text-xs shrink-0">A</div>
+                        <div class="bg-neutral-100 rounded-2xl p-4 text-sm text-neutral-800 max-w-md">
+                            ${reply}
+                        </div>
+                    </div>
+                `;
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }, 800);
+        }
+
+        // Add Item Modal & Features
+        function openAddModal() {
+            document.getElementById('add-modal').classList.remove('hidden');
+        }
+
+        function closeAddModal() {
+            document.getElementById('add-modal').classList.add('hidden');
+        }
+
+        function switchAddMode(mode) {
+            ['upload', 'url', 'camera'].forEach(m => {
+                document.getElementById(`add-mode-${m}`).classList.add('hidden');
+                document.getElementById(`mode-${m}-btn`).className = "py-2 rounded-lg text-neutral-500 hover:text-neutral-900 transition cursor-pointer";
+            });
+            document.getElementById(`add-mode-${mode}`).classList.remove('hidden');
+            document.getElementById(`mode-${mode}-btn`).className = "py-2 rounded-lg bg-white text-neutral-900 shadow-sm transition cursor-pointer";
+        }
+
+        function previewUploadedImage(event) {
+            const file = event.target.files[0];
+            if (file) {
+                currentTempImage = URL.createObjectURL(file);
+                document.getElementById('uploaded-preview-img').src = currentTempImage;
+                document.getElementById('uploaded-file-name').innerText = file.name;
+                document.getElementById('image-preview-container').classList.remove('hidden');
+                document.getElementById('item-name-input').value = file.name.split('.')[0].replace(/-/g, ' ');
+            }
+        }
+
+        function simulateUrlScrape() {
+            const url = document.getElementById('item-url-input').value;
+            if (!url) return;
+            document.getElementById('url-scrape-status').classList.remove('hidden');
+            document.getElementById('item-name-input').value = "Scraped Designer Piece";
+            document.getElementById('item-color-input').value = "Neutral Beige";
+            currentTempImage = "https://images.unsplash.com/photo-1534452203293-494d7ddbf7e0?auto=format&fit=crop&w=600&q=80";
+        }
+
+        function simulateCameraSnap() {
+            currentTempImage = "https://images.unsplash.com/photo-1576995853123-5a10305d93c0?auto=format&fit=crop&w=600&q=80";
+            document.getElementById('item-name-input').value = "Snapshot Garment";
+            document.getElementById('item-color-input').value = "Monochrome";
+            alert("Snapshot captured successfully!");
+        }
+
+        function saveNewWardrobeItem() {
+            const name = document.getElementById('item-name-input').value || "New Garment";
+            const category = document.getElementById('item-category-input').value;
+            const color = document.getElementById('item-color-input').value || "Classic";
+
+            wardrobeItems.unshift({
+                id: Date.now(),
+                name: name,
+                category: category,
+                color: color,
+                image: currentTempImage
+            });
+
+            renderWardrobe();
+            closeAddModal();
+        }
+
+        // Initialize App on Load
+        renderWardrobe();
+    </script>
+</body>
+</html>
